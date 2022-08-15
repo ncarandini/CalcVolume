@@ -63,8 +63,8 @@ double CalcVolumeGriglia(double spessoreAggiuntivo = 0.0)
 
 double CalcMin()
 {
-    double min = 0;
-    foreach (int m in misure)
+    double min = double.MaxValue;
+    foreach (double m in misure)
     {
         min = Math.Min(min, m);
     }
