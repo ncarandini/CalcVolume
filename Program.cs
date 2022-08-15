@@ -1,12 +1,12 @@
-﻿// L'eventuale spessore aggiuntivo è espresso in centimetri
-// Le misure sono espresse in centimetri
+﻿// Lo spessore aggiuntivo è espresso in centimetri
+// Le misure  di altezza sono espresse in centimetri
 // Le posizioni sono espresse in metri
 // Le superfici sono espresse in metri quadri
 // I volumi sono espressi in metri cubi
 
-double spessoreAggiuntivo = 0.0;
+double spessoreAggiuntivo = 1.0;
 
-double[,] misure =
+double[,] misureAltezza =
 {
     { 13.0, 14.1, 15.5, 14.0, 15.0, 15.0, 16.0, 15.0, 14.8, 14.0, 13.9 },
     { 13.0, 14.0, 14.7, 14.5, 15.0, 15.0, 15.0, 14.7, 14.5, 14.7, 14.5 },
@@ -19,59 +19,80 @@ double[] posizioniX = { 0.0, 1.0, 2.0, 3.0, 4.0 };
 double[] posizioniY = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.47 };
 
 // Crea la griglia di punti di misura
-PuntoMisura[,] grigliaMisure = new PuntoMisura[misure.GetLength(0),misure.GetLength(1)];
-for (int r = 0; r < misure.GetLength(0); r++)
+PuntoMisura[,] misureGriglia = new PuntoMisura[misureAltezza.GetLength(0),misureAltezza.GetLength(1)];
+for (int r = 0; r < misureAltezza.GetLength(0); r++)
 {
-    for (int c = 0; c < misure.GetLength(1); c++)
+    for (int c = 0; c < misureAltezza.GetLength(1); c++)
     {
-        grigliaMisure[r,c] = new PuntoMisura(posizioniX[r], posizioniY[c], misure[r,c]);
+        misureGriglia[r,c] = new PuntoMisura(posizioniX[r], posizioniY[c], misureAltezza[r,c]);
     }
 }
 
-double volumeGriglia = CalcVolumeGriglia(spessoreAggiuntivo);
-
+double volumeGriglia = VolumeGriglia(spessoreAggiuntivo);
 Console.WriteLine($"Il volume è pari a {volumeGriglia} mc");
-
-
 
 // Funzioni ------------------------------------------------
 
-double CalcVolumeGriglia(double spessoreAggiuntivo = 0.0)
+double VolumeGriglia(double spessoreAggiuntivo = 0.0)
 {
     double volume = 0;
-    double misuraMinima = CalcMin();
+    double misuraMinima = CalcMisuraMinima();
 
-    for (int r = 0; r < grigliaMisure.GetLength(0) - 1; r++)
+    for (int r = 0; r < misureGriglia.GetLength(0) - 1; r++)
     {
-        for (int c = 0; c < grigliaMisure.GetLength(1) - 1; c++)
+        for (int c = 0; c < misureGriglia.GetLength(1) - 1; c++)
         {
-            volume += CalcVolumePrismaTriangolareObliquo(
-                grigliaMisure[r,c],
-                grigliaMisure[r,c+1],
-                grigliaMisure[r+1,c],
+            volume += VolumePrismaTriangolareObliquo(
+                misureGriglia[r,c],
+                misureGriglia[r,c+1],
+                misureGriglia[r+1,c],
                 misuraMinima);
 
-            volume += CalcVolumePrismaTriangolareObliquo(
-                grigliaMisure[r,c],
-                grigliaMisure[r,c+1],
-                grigliaMisure[r+1,c],
+            volume += VolumePrismaTriangolareObliquo(
+                misureGriglia[r,c],
+                misureGriglia[r,c+1],
+                misureGriglia[r+1,c],
                 misuraMinima);
         }
     }
+
+    if (spessoreAggiuntivo > 0)
+    {
+        volume += AreaGriglia() * spessoreAggiuntivo / 100;
+    }
+
     return volume;
 }
 
-double CalcMin()
+double CalcMisuraMinima()
 {
     double min = double.MaxValue;
-    foreach (double m in misure)
+    foreach (double m in misureAltezza)
     {
         min = Math.Min(min, m);
     }
     return min;
 }
 
-double CalcVolumePrismaTriangolareObliquo(PuntoMisura pm1, PuntoMisura pm2, PuntoMisura pm3, double misuraMinima)
+double AreaGriglia()
+{
+    double minX = double.MaxValue;
+    double maxX = 0;
+
+    double minY = double.MaxValue;
+    double maxY = 0;
+
+    foreach (PuntoMisura pm in misureGriglia)
+    {
+        minX = Math.Min(minX, pm.X);
+        maxX = Math.Max(maxX, pm.X);
+        minY = Math.Min(minY, pm.Y);
+        maxY = Math.Max(maxY, pm.Y);
+    }
+    return (maxX - minX) * (maxY - minY);
+}
+
+double VolumePrismaTriangolareObliquo(PuntoMisura pm1, PuntoMisura pm2, PuntoMisura pm3, double misuraMinima)
 {
     // Calcolo dell'area di un triangolo definito da tre punti sul piano cartesiano
     // https://www.studenti.it/matematica/area-di-un-triangolo-noti-i-vertici-15.jspc
