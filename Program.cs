@@ -1,11 +1,9 @@
-﻿// Lo spessore aggiuntivo è espresso in centimetri
-// Le misure  di altezza sono espresse in centimetri
-// Le posizioni sono espresse in metri
-// Le superfici sono espresse in metri quadri
-// I volumi sono espressi in metri cubi
+﻿// Copyright (C) 2022 Nicolò Carandini
 
+// Lo spessore aggiuntivo è espresso in centimetri
 double spessoreAggiuntivo = 1.0;
 
+// Le misure  di altezza sono espresse in centimetri
 double[,] misureAltezza =
 {
     { 13.0, 14.1, 15.5, 14.0, 15.0, 15.0, 16.0, 15.0, 14.8, 14.0, 13.9 },
@@ -15,6 +13,7 @@ double[,] misureAltezza =
     { 10.2, 11.7, 12.0, 12.5, 12.7, 12.7, 12.8, 13.3, 12.9, 12.9, 12.9 }
 };
 
+// Le posizioni sono espresse in metri
 double[] posizioniX = { 0.0, 1.0, 2.0, 3.0, 4.0 };
 double[] posizioniY = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 9.47 };
 
@@ -33,6 +32,7 @@ Console.WriteLine($"Il volume è pari a {volumeGriglia} mc");
 
 // Funzioni ------------------------------------------------
 
+// I volumi sono espressi in metri cubi
 double VolumeGriglia(double spessoreAggiuntivo = 0.0)
 {
     double volume = 0;
@@ -64,6 +64,7 @@ double VolumeGriglia(double spessoreAggiuntivo = 0.0)
     return volume;
 }
 
+// La misura minima è espressa in centimetri
 double CalcMisuraMinima()
 {
     double min = double.MaxValue;
@@ -74,6 +75,7 @@ double CalcMisuraMinima()
     return min;
 }
 
+// Le superfici sono espresse in metri quadri
 double AreaGriglia()
 {
     double minX = double.MaxValue;
@@ -92,6 +94,7 @@ double AreaGriglia()
     return (maxX - minX) * (maxY - minY);
 }
 
+// I volumi sono espressi in metri cubi
 double VolumePrismaTriangolareObliquo(PuntoMisura pm1, PuntoMisura pm2, PuntoMisura pm3, double misuraMinima)
 {
     // Calcolo dell'area di un triangolo definito da tre punti sul piano cartesiano
